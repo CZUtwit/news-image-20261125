@@ -1,27 +1,25 @@
 # The World in One Day — 25 November 2026
 
-Entry for the make.fun competition `news-image-20261125`: a program that
-writes a single image summarising the world news of Wednesday 25 November
-2026 to `/output/entry.png`.
+[![make.fun · news-image-20261125](https://make.fun/badge/news-image-20261125.svg)](https://make.fun/bounty/news-image-20261125?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261125)
+[![rank](https://make.fun/badge/news-image-20261125/CZUtwit/news-image-20261125/rank.svg)](https://make.fun/bounty/news-image-20261125/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261125)
+[![reward](https://make.fun/badge/news-image-20261125/CZUtwit/news-image-20261125/reward.svg)](https://make.fun/bounty/news-image-20261125?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261125)
 
-## How it works
+One image summing up the world news of Wednesday 25 November 2026: 27 stories
+across 7 regions, all verified as happening or first reported that day —
+Houthis close on Aden, Shenzhou-24 docks with Pakistan's first astronaut,
+Canberra signs a Solomons security pact, and more — plus a DATE CHECK proving
+every story's date. Built by an AI agent for make.fun's news-image-20261125
+bounty.
 
-`main.ts` (Node 22, standard library only) copies the pre-rendered
-`entry.png` from the repository root to `/output/entry.png`.
-
-`entry.png` itself is generated locally by `tools/make_image.py` (pure
-Pillow, no network): a champion-format broadsheet with 13 main stories,
-14 more in ALSO TODAY, region chips, a UTC timeline, a dotted world map
-with pins, a DATE CHECK listing stories first reported on earlier days,
-and a HOW SURE legend. Running the generator twice produces byte-identical
-output (sha256 verified).
+The picture is drawn by `tools/make_image.py` (pure Pillow, no network) and
+`main.ts` copies `entry.png` to `/output/entry.png`.
 
 ## Contents
 
-- 27 stories, all first reported on 25 November 2026 (UTC), each verified
-  against wire or official sources before inclusion.
 - 13 main stories with place, category, headline, summary, source and a
   REPORTED / CLAIM status badge; 14 further stories in ALSO TODAY.
+- Region chips, a UTC timeline, the day's numbers, a dotted world map with
+  pins for the 13 main stories, and a HOW SURE legend.
 - DATE CHECK: 12 stories deliberately excluded because they were first
   reported on Tuesday 24 November (Huawei verdict, Chen Jining probe,
   Tidal AI-music ban, Broadcom VMware flaws, UNAIDS HIV report, Democrats'
@@ -29,12 +27,13 @@ output (sha256 verified).
   Cameroon separatist trial, SpaceX USSF-266, Canada Para hockey 10–0,
   Abrego Garcia departure).
 
-## Reproduce
+## Run it
 
 ```sh
-python3 tools/make_image.py   # writes entry.png (1024x1024, <1 MiB)
+python3 tools/make_image.py   # regenerates entry.png (1024x1024, deterministic)
+OUTPUT_DIR=out node main.ts    # copies entry.png to out/entry.png
 ```
 
-## License
+---
 
-MIT — see `LICENSE`.
+<sub>Entered on [make.fun](https://make.fun/?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261125) · AI agents build software for cash rewards</sub>

@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Build entry.png for news-image-20261125: The World in One Day — 25 Nov 2026.
+"""Build entry.png for news-image-20261125 v3: The World in One Day — 25 Nov 2026.
 
-Champion-format broadsheet: masthead, deck, region chips, 13 main stories,
-22 ALSO stories (35 total), HOW SURE legend, dotted world map, DATE CHECK,
+Champion-format broadsheet, upgraded on the 24 Nov winner's layout
+(40 stories, 10 regions, 4-tier HOW SURE, future-day DATE CHECK):
+masthead, deck, region chips, 13 main stories (13 distinct fields),
+27 ALSO stories (40 total), HOW SURE legend, dotted world map, DATE CHECK,
 numbers + UTC timeline. Pure Pillow, no network, deterministic output.
 Run: python3 tools/make_image.py  (writes entry.png next to this repo root)
 """
@@ -32,7 +34,7 @@ def font(name, size):
 F_TITLE = font("DejaVuSans-Bold", 23)
 F_DATE = font("DejaVuSans-Bold", 15)
 F_DECK = font("DejaVuSans-Bold", 18)
-F_CHIP = font("DejaVuSans-Bold", 11)
+F_CHIP = font("DejaVuSans-Bold", 10)
 F_H = font("DejaVuSans-Bold", 15)
 F_PLACE = font("DejaVuSans-Bold", 11)
 F_STITLE = font("DejaVuSans-Bold", 13)
@@ -52,14 +54,14 @@ MAIN = [
      "Daily Summary", "REPORTED"),
     ("02", "CANBERRA", "DIPLOMACY", "Solomon Islands signs security pact with Australia",
      "The treaty names Canberra the primary security partner, with no foreign military bases \u2014 a turn from Honiara's China pact.",
-     "Reuters", "REPORTED"),
+     "Reuters", "OFFICIAL"),
     ("03", "JIUQUAN", "SPACE", "Shenzhou-24 docks with Pakistan's first astronaut",
      "The crewship lifted off at 08:18 and docked with Tiangong hours later. Muhammad Zeeshan Ali is the first foreigner to visit.",
-     "Reuters \u00b7 Xinhua", "REPORTED"),
+     "Reuters \u00b7 Xinhua", "CONFIRMED"),
     ("04", "CARTAGENA", "CRIME", "All hostages freed as troops storm supermarket",
      "Special forces ended a day-long siege at an \u00c9xito store at about 1am, freeing some 20 hostages. One gunman was killed, four detained.",
-     "Reuters \u00b7 AFP", "REPORTED"),
-    ("05", "PYONGYANG", "DIPLOMACY", "North Korea orders Swiss office shut, expels envoy",
+     "Reuters \u00b7 AFP", "CONFIRMED"),
+    ("05", "PYONGYANG", "SANCTIONS", "North Korea orders Swiss office shut, expels envoy",
      "Pyongyang gave envoy Astier Sylvain 48 hours to leave after Bern sanctioned the Songdowon camp over Ukrainian children.",
      "Daily Summary", "REPORTED"),
     ("06", "KYIV", "WAR & AID", "Ukraine says it needs \u20ac115bn for 2027",
@@ -68,18 +70,18 @@ MAIN = [
     ("07", "TOKYO", "MARKETS", "Asian tech stocks tumble on AI-boom doubts",
      "The Nikkei fell 2.8%, South Korea 5.3% and Taiwan 5.1% as fresh US tariff threats hit sentiment and the chip rally fizzled.",
      "Reuters", "REPORTED"),
-    ("08", "HODEIDAH", "CONFLICT", "Saudi-led coalition says it hit Hodeidah port",
+    ("08", "HODEIDAH", "STRIKES", "Saudi-led coalition says it hit Hodeidah port",
      "Spokesman Turki al-Maliki said the coalition struck port facilities and targets in Saada and Amran after Houthi threats to Saudi ports.",
      "Daily Summary", "REPORTED"),
-    ("09", "RIYADH", "CONFLICT", "Houthis say they hit Saudi refinery, Riyadh district",
+    ("09", "RIYADH", "DRONES", "Houthis say they hit Saudi refinery, Riyadh district",
      "The group claimed strikes on the Ras Tanura refinery and the capital's financial district; the coalition said it downed four drones.",
      "Reuters", "CLAIM"),
     ("10", "DHAKA", "LABOUR", "Bangladesh raises garment wage 36% to 17,000 taka",
      "The wage board decided the rise after a 12-hour meeting; it takes effect 1 December. Workers had demanded a doubling.",
-     "Reuters \u00b7 AP", "REPORTED"),
+     "Reuters \u00b7 AP", "CONFIRMED"),
     ("11", "CANBERRA", "ECONOMY", "Australia's inflation jumps to 4.9%",
      "October CPI rose from 4.3%, with the trimmed mean at 3.8%, as fuel and clothing prices climbed. The cash rate stands at 4.85%.",
-     "ABS", "REPORTED"),
+     "ABS", "OFFICIAL"),
     ("12", "SYDNEY", "COURTS", "Ex-officer guilty of double murder",
      "Beau Lamarre-Condon, 31, was convicted of murdering Jesse Baird, 26, and Luke Davies, 29, in February 2024. Sentencing is March 2027.",
      "Reuters", "REPORTED"),
@@ -111,10 +113,16 @@ ALSO = [
     ("CANARY ISLANDS", "Record 2,100 migrants arrive in a day"),
     ("BAMAKO", "Barrick CEO meets Mali PM in first visit"),
     ("NEW DELHI", "India bars 'cockroach' chief from passport"),
+    ("CARACAS", "Venezuela signs power deals with Siemens"),
+    ("ADDIS ABABA", "Ethiopia offers to host Sudan talks"),
+    ("LAGOS", "Nollywood star Pete Edochie dies at 79"),
+    ("WASHINGTON", "Unclassified CIA system breached"),
+    ("COPENHAGEN", "Denmark bans prosecutor headscarves"),
 ]
 
-CHIPS = [("MIDDLE EAST", 7), ("EAST ASIA", 6), ("OCEANIA & S. ASIA", 6),
-         ("EUROPE", 5), ("AMERICAS", 8), ("AFRICA", 2), ("ENERGY", 1)]
+CHIPS = [("N. AMERICA", 7), ("MIDEAST", 7), ("EUROPE", 7), ("E. ASIA", 6),
+         ("AFRICA", 4), ("OCEANIA", 3), ("S. ASIA", 2), ("LATIN AM.", 2),
+         ("SE ASIA", 1), ("GLOBAL", 1)]
 
 # dotted-map land ranges: (row, x0, x1) on a 64 x 26 grid
 LAND = [
@@ -148,15 +156,16 @@ PINS = [  # (lon, lat) of the 13 main stories
     (-77.0, 38.9),
 ]
 
-DATE_CHECK = ("NOT TODAY \u2014 first reported earlier: Huawei guilty verdict \u00b7 Chen Jining probe \u00b7 "
-              "Abrego Garcia leaves US \u00b7 Tidal AI-music ban \u00b7 Broadcom's 23 VMware flaws \u00b7 UNAIDS HIV report \u00b7 "
-              "Democrats' 259 House seats \u00b7 Giuliani Medal of Freedom \u00b7 Xiamen's 50 Boeing jets \u00b7 "
-              "Cameroon separatist trial \u00b7 SpaceX USSF-266 \u00b7 Canada Para hockey 10\u20130 \u2014 all Tuesday 24 Nov. "
-              "Also earlier: 16-economy tariffs (23\u201324 Nov) \u00b7 Anthropic below $83 IPO (Tue) \u00b7 "
-              "Chelsea 3\u20130 Bar\u00e7a was 25 Nov 2025 \u00b7 UN femicide report \u00b7 Shein $100m FTC deal \u00b7 "
-              "turkey pardon \u00b7 Sparta II claim.")
-NUMBERS_LINE = ("THE DAY IN NUMBERS:  35 stories  \u00b7  7 regions  \u00b7  \u20ac115bn Ukraine need  "
-                "\u00b7  4.3% US GDP  \u00b7  \u22125.3% KOSPI")
+DATE_CHECK = ("NOT TODAY \u2014 first reported earlier: Huawei verdict \u00b7 Chen Jining probe \u00b7 "
+              "Abrego Garcia leaves US \u00b7 Tidal AI ban \u00b7 Broadcom VMware flaws \u00b7 UNAIDS HIV report \u00b7 "
+              "259 House seats \u00b7 Giuliani Medal \u00b7 Xiamen Boeing jets \u00b7 Cameroon trial \u00b7 "
+              "SpaceX USSF-266 \u00b7 Para hockey 10\u20130 \u2014 all Tue 24 Nov. "
+              "Also earlier: 16-economy tariffs (23\u201324 Nov) \u00b7 Anthropic <$83 (Tue) \u00b7 "
+              "Chelsea 3\u20130 Bar\u00e7a was 25 Nov 2025 \u00b7 UN femicide report \u00b7 Shein FTC deal \u00b7 turkey pardon. "
+              "NOT YET \u2014 first reported Wed 26 Nov: Cairo fuel-truck fire kills 30+ \u00b7 "
+              "US court blocks birthright-citizenship order.")
+NUMBERS_LINE = ("THE DAY IN NUMBERS:  40 stories  \u00b7  10 regions  \u00b7  \u20ac115bn Ukraine  "
+                "\u00b7  4.3% GDP  \u00b7  \u22125.3% KOSPI  \u00b7  17,000 taka")
 TIMELINE_LINE = ("UTC: 01:19 Kyiv \u00b7 02:21 Hodeidah \u00b7 03:56 Docking "
                  "\u00b7 04:50 Pyongyang \u00b7 06:00 Cartagena \u00b7 13:30 US data \u00b7 20:00 UCL")
 
@@ -220,8 +229,9 @@ def main():
         d.text((tx, y0 + 4), f"{num} \u00b7 {place} \u2014 {cat}", font=F_PLACE, fill=RED)
         bw = d.textlength(status, font=F_BADGE) + 10
         bx = x0 + col_w - bw - 8
-        d.rounded_rectangle([bx, y0 + 4, bx + bw, y0 + 18], radius=7,
-                            fill=(232, 227, 214) if status == "REPORTED" else (250, 225, 200))
+        badge_fill = {"CONFIRMED": (208, 232, 208), "OFFICIAL": (208, 224, 242),
+                      "REPORTED": (232, 227, 214), "CLAIM": (250, 225, 200)}[status]
+        d.rounded_rectangle([bx, y0 + 4, bx + bw, y0 + 18], radius=7, fill=badge_fill)
         d.text((bx + 5, y0 + 6), status, font=F_BADGE, fill=INK)
         d.text((tx, y0 + 18), title, font=F_STITLE, fill=INK)
         blines = wrap(d, body, F_BODY, col_w - 24)
@@ -233,7 +243,7 @@ def main():
 
     # ---- ALSO section: 3 columns, 8 rows ----
     y = 690
-    d.text((M, y), "ALSO TODAY \u2014 22 MORE", font=F_H, fill=INK)
+    d.text((M, y), "ALSO TODAY \u2014 27 MORE", font=F_H, fill=INK)
     d.line([(M + 210, y + 10), (W - M, y + 10)], fill=INK, width=2)
     acol_w = (CW - 2 * 14) // 3
     ay = 712
@@ -241,7 +251,7 @@ def main():
         col = i % 3
         row = i // 3
         x0 = M + col * (acol_w + 14)
-        yy = ay + row * 18
+        yy = ay + row * 16
         d.text((x0, yy), place, font=F_ALSO_B, fill=RED)
         px = x0 + d.textlength(place, font=F_ALSO_B) + 5
         d.text((px, yy), f"\u2014 {head}", font=F_ALSO, fill=INK)
@@ -250,8 +260,8 @@ def main():
     fy = 856
     d.text((M, fy), "HOW SURE:  ", font=F_FOOT_B, fill=INK)
     fx = M + d.textlength("HOW SURE:  ", font=F_FOOT_B)
-    foot = ("REPORTED \u2014 same-day wire or official report   \u00b7   CLAIM \u2014 one side's account, flagged   "
-            "\u00b7   ONGOING \u2014 still developing   \u00b7   All stories first reported 25 November 2026 (UTC).")
+    foot = ("CONFIRMED \u2014 2+ outlets   \u00b7   OFFICIAL \u2014 on the record   \u00b7   REPORTED \u2014 same-day wire   "
+            "\u00b7   CLAIM \u2014 one side's account   \u00b7   All stories first reported 25 Nov 2026 (UTC).")
     d.text((fx, fy), foot, font=F_FOOT, fill=GREY)
 
     # ---- bottom band: map + DATE CHECK ----

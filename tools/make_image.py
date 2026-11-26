@@ -2,8 +2,8 @@
 """Build entry.png for news-image-20261125: The World in One Day — 25 Nov 2026.
 
 Champion-format broadsheet: masthead, deck, region chips, 13 main stories,
-ALSO list, HOW SURE legend, dotted world map, DATE CHECK, numbers + UTC
-timeline. Pure Pillow, no network, deterministic output.
+22 ALSO stories (35 total), HOW SURE legend, dotted world map, DATE CHECK,
+numbers + UTC timeline. Pure Pillow, no network, deterministic output.
 Run: python3 tools/make_image.py  (writes entry.png next to this repo root)
 """
 import os
@@ -91,7 +91,7 @@ MAIN = [
 ALSO = [
     ("HONG KONG", "Tai Po fire: 1 year on, 168 mourned"),
     ("VIENNA", "Brent $90.97 as OPEC+ meets 29 Nov"),
-    ("WASHINGTON", "US tariffs on 16 economies (reported)"),
+    ("WASHINGTON", "US proposes tariffs on 14 partners"),
     ("SHANGHAI", "Leaders pledge loyalty after Chen probe"),
     ("GAZA CITY", "Second Hamas security chief killed (claim)"),
     ("WEST JAVA", "Hunt for dozens in flooded gold mine"),
@@ -103,10 +103,18 @@ ALSO = [
     ("BAMAKO", "Sahel rebels turn to cheap drones"),
     ("RIYADH", "Saudi 2027 budget: $370bn spending"),
     ("NEW YORK", "Bitcoin slips 1% to $59,258"),
+    ("WASHINGTON", "US GDP revised to 4.3%; core PCE 3.3%"),
+    ("EUROPE", "UCL: Liverpool 3-0, Barça 4-1, Lille stun Bayern"),
+    ("WASHINGTON", "Fed Beige Book: 8 of 12 districts grow"),
+    ("WASHINGTON", "Jobless claims fall to 189,000"),
+    ("HASAKA", "IS attack kills two security personnel"),
+    ("CANARY ISLANDS", "Record 2,100 migrants arrive in a day"),
+    ("BAMAKO", "Barrick CEO meets Mali PM in first visit"),
+    ("NEW DELHI", "India bars 'cockroach' chief from passport"),
 ]
 
-CHIPS = [("MIDDLE EAST", 6), ("EAST ASIA", 6), ("OCEANIA & S. ASIA", 5),
-         ("EUROPE", 3), ("AMERICAS", 5), ("AFRICA", 1), ("ENERGY", 1)]
+CHIPS = [("MIDDLE EAST", 7), ("EAST ASIA", 6), ("OCEANIA & S. ASIA", 6),
+         ("EUROPE", 5), ("AMERICAS", 8), ("AFRICA", 2), ("ENERGY", 1)]
 
 # dotted-map land ranges: (row, x0, x1) on a 64 x 26 grid
 LAND = [
@@ -143,11 +151,14 @@ PINS = [  # (lon, lat) of the 13 main stories
 DATE_CHECK = ("NOT TODAY \u2014 first reported earlier: Huawei guilty verdict \u00b7 Chen Jining probe \u00b7 "
               "Abrego Garcia leaves US \u00b7 Tidal AI-music ban \u00b7 Broadcom's 23 VMware flaws \u00b7 UNAIDS HIV report \u00b7 "
               "Democrats' 259 House seats \u00b7 Giuliani Medal of Freedom \u00b7 Xiamen's 50 Boeing jets \u00b7 "
-              "Cameroon separatist trial \u00b7 SpaceX USSF-266 \u00b7 Canada Para hockey 10\u20130 \u2014 all Tuesday 24 Nov.")
-NUMBERS_LINE = ("THE DAY IN NUMBERS:  27 stories  \u00b7  7 regions  \u00b7  \u20ac115bn Ukraine need  "
-                "\u00b7  17,000 taka wage  \u00b7  \u22125.3% KOSPI")
-TIMELINE_LINE = ("UTC: 00:00 Aden \u00b7 00:18 Shenzhou-24 \u00b7 01:19 Kyiv \u00b7 02:21 Hodeidah "
-                 "\u00b7 03:56 Docking \u00b7 04:50 Pyongyang \u00b7 06:00 Cartagena")
+              "Cameroon separatist trial \u00b7 SpaceX USSF-266 \u00b7 Canada Para hockey 10\u20130 \u2014 all Tuesday 24 Nov. "
+              "Also earlier: 16-economy tariffs (23\u201324 Nov) \u00b7 Anthropic below $83 IPO (Tue) \u00b7 "
+              "Chelsea 3\u20130 Bar\u00e7a was 25 Nov 2025 \u00b7 UN femicide report \u00b7 Shein $100m FTC deal \u00b7 "
+              "turkey pardon \u00b7 Sparta II claim.")
+NUMBERS_LINE = ("THE DAY IN NUMBERS:  35 stories  \u00b7  7 regions  \u00b7  \u20ac115bn Ukraine need  "
+                "\u00b7  4.3% US GDP  \u00b7  \u22125.3% KOSPI")
+TIMELINE_LINE = ("UTC: 01:19 Kyiv \u00b7 02:21 Hodeidah \u00b7 03:56 Docking "
+                 "\u00b7 04:50 Pyongyang \u00b7 06:00 Cartagena \u00b7 13:30 US data \u00b7 20:00 UCL")
 
 
 def wrap(draw, text, fnt, max_w):
@@ -194,10 +205,10 @@ def main():
     d.text((M, y), "THE 13 MAIN STORIES", font=F_H, fill=INK)
     d.line([(M + 218, y + 10), (W - M, y + 10)], fill=INK, width=2)
 
-    # ---- main cards: 2 columns, 7 left / 6 right, pitch 84 ----
+    # ---- main cards: 2 columns, 7 left / 6 right, pitch 80, card height 74 ----
     col_w = (CW - 16) // 2
-    card_h = 84
-    top = 130
+    card_h = 80
+    top = 128
     for i, (num, place, cat, title, body, src, status) in enumerate(MAIN):
         col = 0 if i < 7 else 1
         row = i if i < 7 else i - 7
@@ -206,26 +217,26 @@ def main():
         d.rectangle([x0, y0, x0 + col_w, y0 + card_h - 6], fill=CARD_BG)
         d.rectangle([x0, y0, x0 + 4, y0 + card_h - 6], fill=RED if i % 2 == 0 else INK)
         tx = x0 + 12
-        d.text((tx, y0 + 5), f"{num} \u00b7 {place} \u2014 {cat}", font=F_PLACE, fill=RED)
+        d.text((tx, y0 + 4), f"{num} \u00b7 {place} \u2014 {cat}", font=F_PLACE, fill=RED)
         bw = d.textlength(status, font=F_BADGE) + 10
         bx = x0 + col_w - bw - 8
         d.rounded_rectangle([bx, y0 + 4, bx + bw, y0 + 18], radius=7,
                             fill=(232, 227, 214) if status == "REPORTED" else (250, 225, 200))
         d.text((bx + 5, y0 + 6), status, font=F_BADGE, fill=INK)
-        d.text((tx, y0 + 20), title, font=F_STITLE, fill=INK)
+        d.text((tx, y0 + 18), title, font=F_STITLE, fill=INK)
         blines = wrap(d, body, F_BODY, col_w - 24)
-        by = y0 + 38
+        by = y0 + 34
         for ln in blines[:2]:
             d.text((tx, by), ln, font=F_BODY, fill=(60, 58, 52))
             by += 14
-        d.text((tx, y0 + 66), f"Source: {src}", font=F_SRC, fill=GREY)
+        d.text((tx, y0 + 62), f"Source: {src}", font=F_SRC, fill=GREY)
 
-    # ---- ALSO section: 3 columns, 5 rows ----
-    y = 726
-    d.text((M, y), "ALSO TODAY \u2014 14 MORE", font=F_H, fill=INK)
-    d.line([(M + 200, y + 10), (W - M, y + 10)], fill=INK, width=2)
+    # ---- ALSO section: 3 columns, 8 rows ----
+    y = 690
+    d.text((M, y), "ALSO TODAY \u2014 22 MORE", font=F_H, fill=INK)
+    d.line([(M + 210, y + 10), (W - M, y + 10)], fill=INK, width=2)
     acol_w = (CW - 2 * 14) // 3
-    ay = 750
+    ay = 712
     for i, (place, head) in enumerate(ALSO):
         col = i % 3
         row = i // 3
@@ -236,7 +247,7 @@ def main():
         d.text((px, yy), f"\u2014 {head}", font=F_ALSO, fill=INK)
 
     # ---- HOW SURE legend, full width ----
-    fy = 848
+    fy = 856
     d.text((M, fy), "HOW SURE:  ", font=F_FOOT_B, fill=INK)
     fx = M + d.textlength("HOW SURE:  ", font=F_FOOT_B)
     foot = ("REPORTED \u2014 same-day wire or official report   \u00b7   CLAIM \u2014 one side's account, flagged   "
@@ -244,14 +255,14 @@ def main():
     d.text((fx, fy), foot, font=F_FOOT, fill=GREY)
 
     # ---- bottom band: map + DATE CHECK ----
-    y = 862
+    y = 872
     d.line([(M, y), (W - M, y)], fill=LGREY, width=1)
-    d.text((M, 870), "WHERE IT HAPPENED \u2014 13 MAIN STORIES", font=F_DC_B, fill=INK)
+    d.text((M, 880), "WHERE IT HAPPENED \u2014 13 MAIN STORIES", font=F_DC_B, fill=INK)
     dx = M + 316
-    d.text((dx, 870), "DATE CHECK", font=F_DC_B, fill=RED)
+    d.text((dx, 880), "DATE CHECK", font=F_DC_B, fill=RED)
     # dotted world map, left
-    map_x0, map_y0 = M, 888
-    mw, mh = 300, 112
+    map_x0, map_y0 = M, 896
+    mw, mh = 300, 104
     cell_w, cell_h = mw / 64.0, mh / 26.0
     land_cells = set()
     for (r, a, b) in LAND:
@@ -271,7 +282,7 @@ def main():
     # DATE CHECK + numbers + timeline, right
     dw = W - M - dx
     dlines = wrap(d, DATE_CHECK, F_DC, dw)
-    dy = 888
+    dy = 896
     for ln in dlines:
         d.text((dx, dy), ln, font=F_DC, fill=(60, 58, 52))
         dy += 13
